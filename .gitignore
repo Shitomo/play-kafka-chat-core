@@ -1,4 +1,0 @@
-/ent/*/*
-/ent/*.go
-!/ent/schema/*
-!/ent/generate.go
