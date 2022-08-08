@@ -33,6 +33,10 @@ func NewDatetime(datetimeStr string) (Datetime, *ValidationError) {
 	return Datetime(t), nil
 }
 
+func NewDatetimeFromUnixMilli(s int64) Datetime {
+	return Datetime(time.UnixMilli(s))
+}
+
 func Now() Datetime {
 	return Datetime(time.Now())
 }

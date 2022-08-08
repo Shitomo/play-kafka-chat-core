@@ -15,11 +15,13 @@ const RealtimeMessageTopic = "realtime-message-topic"
 
 type RealtimeMessageGateway struct {
 	asyncProducer sarama.AsyncProducer
+	consumer      sarama.PartitionConsumer
 }
 
-func NewRealtimeMessageGateway(producer sarama.AsyncProducer) RealtimeMessageGateway {
+func NewRealtimeMessageGateway(producer sarama.AsyncProducer, consumer sarama.PartitionConsumer) RealtimeMessageGateway {
 	return RealtimeMessageGateway{
 		asyncProducer: producer,
+		consumer:      consumer,
 	}
 }
 
@@ -27,8 +29,8 @@ func NewRealtimeMessageGateway(producer sarama.AsyncProducer) RealtimeMessageGat
 type SendMessage struct {
 	SenderId  string `json:"senderId"`
 	Content   string `json:"content"`
-	CreatedAt uint64 `json:"createdAt"`
-	UpdatedAt uint64 `json:"updatedAt"`
+	CreatedAt int64  `json:"createdAt"`
+	UpdatedAt int64  `json:"updatedAt"`
 }
 
 func (u RealtimeMessageGateway) Produce(ctx context.Context, message model.Message) error {
@@ -38,8 +40,8 @@ func (u RealtimeMessageGateway) Produce(ctx context.Context, message model.Messa
 	send := &SendMessage{
 		SenderId:  message.SenderId.String(),
 		Content:   message.Content,
-		CreatedAt: uint64(message.CreatedAt.UnixMilli()),
-		UpdatedAt: uint64(message.UpdatedAt.UnixMilli()),
+		CreatedAt: int64(message.CreatedAt.UnixMilli()),
+		UpdatedAt: int64(message.UpdatedAt.UnixMilli()),
 	}
 
 	jsBytes, err := json.Marshal(send)
@@ -63,4 +65,38 @@ func (u RealtimeMessageGateway) Produce(ctx context.Context, message model.Messa
 	case <-ctx.Done():
 		return nil
 	}
+}
+
+func (u RealtimeMessageGateway) Consume(ctx context.Context) (chan model.Message, chan error) {
+	ch := make(chan model.Message, 1)
+	errCh := make(chan error, 1)
+	defer func() {
+		close(ch)
+		close(errCh)
+	}()
+	// コンシューマールーチン
+	go func(ch chan model.Message, errCh chan error) {
+	CONSUMER_FOR:
+		for {
+			select {
+			case msg := <-u.consumer.Messages():
+				var message SendMessage
+				if err := json.Unmarshal(msg.Value, &message); err != nil {
+					errCh <- err
+					continue
+				}
+				ch <- model.Message{
+					SenderId:  model.SenderId(message.SenderId),
+					Content:   message.Content,
+					CreatedAt: model.NewDatetimeFromUnixMilli(message.CreatedAt),
+					UpdatedAt: model.NewDatetimeFromUnixMilli(message.UpdatedAt),
+				}
+			case err := <-u.consumer.Errors():
+				errCh <- err
+			case <-ctx.Done():
+				break CONSUMER_FOR
+			}
+		}
+	}(ch, errCh)
+	return ch, errCh
 }
