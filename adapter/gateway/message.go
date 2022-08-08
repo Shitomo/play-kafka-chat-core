@@ -3,8 +3,8 @@ package gateway
 import (
 	"context"
 
-	"github.com/Shitomo/my-chat-core/driver/db"
-	"github.com/Shitomo/my-chat-core/model"
+	"github.com/Shitomo/play-kafka-chat-core/driver/db"
+	"github.com/Shitomo/play-kafka-chat-core/model"
 )
 
 type MessageGateway struct {

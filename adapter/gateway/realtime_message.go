@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Shitomo/my-chat-core/model"
+	"github.com/Shitomo/play-kafka-chat-core/model"
 
 	"github.com/Shopify/sarama"
 )

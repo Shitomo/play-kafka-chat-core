@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	cx "github.com/Shitomo/my-chat-core/driver/context"
-	"github.com/Shitomo/my-chat-core/model"
+	cx "github.com/Shitomo/play-kafka-chat-core/driver/context"
+	"github.com/Shitomo/play-kafka-chat-core/model"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Shitomo/my-chat-core/ent"
+	"github.com/Shitomo/play-kafka-chat-core/ent"
 
 	_ "github.com/lib/pq"
 )

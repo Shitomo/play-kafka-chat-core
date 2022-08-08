@@ -1,4 +1,4 @@
-module github.com/Shitomo/my-chat-core
+module github.com/Shitomo/play-kafka-chat-core
 
 go 1.19
 
