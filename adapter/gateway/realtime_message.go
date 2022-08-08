@@ -3,7 +3,7 @@ package gateway
 import (
 	"context"
 	"encoding/json"
-	"github/Shitomo/my-chat/core/model"
+	"github/Shitomo/my-chat-core/model"
 	"strconv"
 	"time"
 

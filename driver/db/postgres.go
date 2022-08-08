@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"github/Shitomo/my-chat/core/ent"
+	"github/Shitomo/my-chat-core/ent"
 	"os"
 
 	_ "github.com/lib/pq"

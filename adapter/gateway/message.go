@@ -2,8 +2,8 @@ package gateway
 
 import (
 	"context"
-	"github/Shitomo/my-chat/core/driver/db"
-	"github/Shitomo/my-chat/core/model"
+	"github/Shitomo/my-chat-core/driver/db"
+	"github/Shitomo/my-chat-core/model"
 )
 
 type MessageGateway struct {
