@@ -1,4 +1,4 @@
-module github/Shitomo/my-chat-core
+module github.com/Shitomo/my-chat-core
 
 go 1.19
 

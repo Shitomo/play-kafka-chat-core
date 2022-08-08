@@ -3,9 +3,10 @@ package gateway
 import (
 	"context"
 	"encoding/json"
-	"github/Shitomo/my-chat-core/model"
 	"strconv"
 	"time"
+
+	"github.com/Shitomo/my-chat-core/model"
 
 	"github.com/Shopify/sarama"
 )
