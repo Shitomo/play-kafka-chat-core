@@ -13,15 +13,13 @@ import (
 
 const RealtimeMessageTopic = "realtime-message-topic"
 
-type RealtimeMessageGateway struct {
+type RealtimeMessagePublisher struct {
 	asyncProducer sarama.AsyncProducer
-	consumer      sarama.PartitionConsumer
 }
 
-func NewRealtimeMessageGateway(producer sarama.AsyncProducer, consumer sarama.PartitionConsumer) RealtimeMessageGateway {
-	return RealtimeMessageGateway{
+func NewRealtimeMessageGateway(producer sarama.AsyncProducer, consumer sarama.PartitionConsumer) RealtimeMessagePublisher {
+	return RealtimeMessagePublisher{
 		asyncProducer: producer,
-		consumer:      consumer,
 	}
 }
 
@@ -33,7 +31,7 @@ type SendMessage struct {
 	UpdatedAt int64  `json:"updatedAt"`
 }
 
-func (u RealtimeMessageGateway) Produce(ctx context.Context, message model.Message) error {
+func (u RealtimeMessagePublisher) Produce(ctx context.Context, message model.Message) error {
 
 	timestamp := time.Now().UnixNano()
 
@@ -67,7 +65,17 @@ func (u RealtimeMessageGateway) Produce(ctx context.Context, message model.Messa
 	}
 }
 
-func (u RealtimeMessageGateway) Consume(ctx context.Context) (chan model.Message, chan error) {
+type RealtimeMessageConsumer struct {
+	consumer sarama.PartitionConsumer
+}
+
+func NewRealtimeMessageConsumer(consumer sarama.PartitionConsumer) RealtimeMessageConsumer {
+	return RealtimeMessageConsumer{
+		consumer: consumer,
+	}
+}
+
+func (u RealtimeMessageConsumer) Consume(ctx context.Context) (chan model.Message, chan error) {
 	ch := make(chan model.Message, 1)
 	errCh := make(chan error, 1)
 	defer func() {
