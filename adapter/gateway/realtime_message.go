@@ -17,7 +17,7 @@ type RealtimeMessagePublisher struct {
 	asyncProducer sarama.AsyncProducer
 }
 
-func NewRealtimeMessageGateway(producer sarama.AsyncProducer, consumer sarama.PartitionConsumer) RealtimeMessagePublisher {
+func NewRealtimeMessagePublisher(producer sarama.AsyncProducer) RealtimeMessagePublisher {
 	return RealtimeMessagePublisher{
 		asyncProducer: producer,
 	}
