@@ -78,10 +78,6 @@ func NewRealtimeMessageConsumer(consumer sarama.PartitionConsumer) RealtimeMessa
 func (u RealtimeMessageConsumer) Consume(ctx context.Context) (chan model.Message, chan error) {
 	ch := make(chan model.Message, 1)
 	errCh := make(chan error, 1)
-	defer func() {
-		close(ch)
-		close(errCh)
-	}()
 	// コンシューマールーチン
 	go func(ch chan model.Message, errCh chan error) {
 	CONSUMER_FOR:
@@ -102,6 +98,8 @@ func (u RealtimeMessageConsumer) Consume(ctx context.Context) (chan model.Messag
 			case err := <-u.consumer.Errors():
 				errCh <- err
 			case <-ctx.Done():
+				close(ch)
+				close(errCh)
 				break CONSUMER_FOR
 			}
 		}
